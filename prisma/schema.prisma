@@ -1,0 +1,102 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id    String @id @default(cuid())
+  email String @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  password Password?
+  notes    Note[]
+  members  Member[]
+}
+
+model Password {
+  hash String
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId String @unique
+}
+
+model Category {
+  id            String        @id @default(cuid())
+  subCategories SubCategory[]
+  name          String
+}
+
+model SubCategory {
+  id         String   @id @default(cuid())
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  categoryId String
+  name       String
+  tools      Tool[]
+}
+
+model Tool {
+  id            String      @id @default(cuid())
+  name          String
+  description   String
+  productLink   String
+  subCategory   SubCategory @relation(fields: [subCategoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  subCategoryId String
+}
+
+model MemberPermission {
+  id     String   @id @default(cuid())
+  name   String
+  Member Member[]
+}
+
+model Member {
+  user         User             @relation(fields: [userId], references: [id])
+  userId       String
+  community    Community        @relation(fields: [communityId], references: [id])
+  communityId  String
+  permission   MemberPermission @relation(fields: [permissionId], references: [id])
+  permissionId String
+
+  @@id([userId, communityId])
+}
+
+model Community {
+  id      String       @id @default(cuid())
+  name    String
+  members Member[]
+  invites Invitation[]
+}
+
+model InvitationStatus {
+  id          String       @id @default(cuid())
+  name        String
+  invitations Invitation[]
+}
+
+model Invitation {
+  id          String           @id @default(cuid())
+  createdAt   DateTime         @default(now())
+  community   Community        @relation(fields: [communityId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  communityId String
+  status      InvitationStatus @relation(fields: [statusId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  statusId    String
+  userEmail   String
+}
+
+model Note {
+  id    String @id @default(cuid())
+  title String
+  body  String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId String
+}
