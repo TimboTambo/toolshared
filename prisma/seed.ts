@@ -6,89 +6,113 @@ const prisma = new PrismaClient();
 async function seed() {
   const email = "rachel@remix.run";
 
-  // cleanup the existing database
-  await prisma.user.delete({ where: { email } }).catch(() => {
-    // no worries if it doesn't exist yet
-  });
+  // // cleanup the existing database
+  // await prisma.user.delete({ where: { email } }).catch(() => {
+  //   // no worries if it doesn't exist yet
+  // });
 
-  const hashedPassword = await bcrypt.hash("racheliscool", 10);
+  // const hashedPassword = await bcrypt.hash("racheliscool", 10);
 
-  const user = await prisma.user.create({
+  // const user = await prisma.user.ups({
+  //   data: {
+  //     email,
+  //     password: {
+  //       create: {
+  //         hash: hashedPassword,
+  //       },
+  //     },
+  //   },
+  // });
+
+  // await prisma.note.create({
+  //   data: {
+  //     title: "My first note",
+  //     body: "Hello, world!",
+  //     userId: user.id,
+  //   },
+  // });
+
+  // await prisma.note.create({
+  //   data: {
+  //     title: "My second note",
+  //     body: "Hello, world!",
+  //     userId: user.id,
+  //   },
+  // });
+
+  // const gardenCategory = await prisma.category.create({
+  //   data: {
+  //     name: "Garden",
+  //   },
+  // });
+
+  // await prisma.subCategory.create({
+  //   data: {
+  //     name: "Plants & seeds",
+  //     categoryId: gardenCategory.id,
+  //   },
+  // });
+
+  // await prisma.subCategory.create({
+  //   data: {
+  //     name: "Pots & planters",
+  //     categoryId: gardenCategory.id,
+  //   },
+  // });
+
+  // const handToolsCategory = await prisma.category.create({
+  //   data: {
+  //     name: "Hand tools",
+  //   },
+  // });
+
+  // await prisma.subCategory.create({
+  //   data: {
+  //     name: "Hand saws",
+  //     categoryId: handToolsCategory.id,
+  //   },
+  // });
+
+  // await prisma.subCategory.create({
+  //   data: {
+  //     name: "Spanners & wrenches",
+  //     categoryId: handToolsCategory.id,
+  //   },
+  // });
+
+  // await prisma.memberPermission.create({
+  //   data: {
+  //     name: "Admin",
+  //   },
+  // });
+
+  // await prisma.memberPermission.create({
+  //   data: {
+  //     name: "Member",
+  //   },
+  // });
+
+  await prisma.invitationStatus.create({
     data: {
-      email,
-      password: {
-        create: {
-          hash: hashedPassword,
-        },
-      },
+      name: "Open",
     },
   });
 
-  await prisma.note.create({
+  await prisma.invitationStatus.create({
     data: {
-      title: "My first note",
-      body: "Hello, world!",
-      userId: user.id,
+      name: "Accepted",
     },
   });
 
-  await prisma.note.create({
+  await prisma.invitationStatus.create({
     data: {
-      title: "My second note",
-      body: "Hello, world!",
-      userId: user.id,
+      name: "Rejected",
     },
   });
 
-  const gardenCategory = await prisma.category.create({
+  await prisma.invitationStatus.create({
     data: {
-      name: "Garden",
-    },
-  });
-
-  await prisma.subCategory.create({
-    data: {
-      name: "Plants & seeds",
-      categoryId: gardenCategory.id,
-    },
-  });
-
-  await prisma.subCategory.create({
-    data: {
-      name: "Pots & planters",
-      categoryId: gardenCategory.id,
-    },
-  });
-
-  const handToolsCategory = await prisma.category.create({
-    data: {
-      name: "Hand tools",
-    },
-  });
-
-  await prisma.subCategory.create({
-    data: {
-      name: "Hand saws",
-      categoryId: handToolsCategory.id,
-    },
-  });
-
-  await prisma.subCategory.create({
-    data: {
-      name: "Spanners & wrenches",
-      categoryId: handToolsCategory.id,
-    },
-  });
-
-  await prisma.memberPermission.create({
-    data: {
-      name: "Admin",
-    },
-  });
-
-  await prisma.memberPermission.create({
-    data: {
-      name: "Member",
+      name: "Expired",
     },
   });
 

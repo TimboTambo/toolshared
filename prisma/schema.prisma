@@ -50,8 +50,7 @@ model Tool {
 }
 
 model MemberPermission {
-  id     String   @id @default(cuid())
-  name   String
+  name   String   @id
   Member Member[]
 }
 
@@ -60,7 +59,7 @@ model Member {
   userId       String
   community    Community        @relation(fields: [communityId], references: [id])
   communityId  String
-  permission   MemberPermission @relation(fields: [permissionId], references: [id])
+  permission   MemberPermission @relation(fields: [permissionId], references: [name])
   permissionId String
 
   @@id([userId, communityId])
@@ -74,19 +73,19 @@ model Community {
 }
 
 model InvitationStatus {
-  id          String       @id @default(cuid())
-  name        String
+  name        String       @id
   invitations Invitation[]
 }
 
 model Invitation {
-  id          String           @id @default(cuid())
-  createdAt   DateTime         @default(now())
-  community   Community        @relation(fields: [communityId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  communityId String
-  status      InvitationStatus @relation(fields: [statusId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  statusId    String
-  userEmail   String
+  id            String           @id @default(cuid())
+  createdAt     DateTime         @default(now())
+  lastUpdatedAt DateTime         @default(now())
+  community     Community        @relation(fields: [communityId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  communityId   String
+  status        InvitationStatus @relation(fields: [statusId], references: [name], onDelete: Cascade, onUpdate: Cascade)
+  statusId      String
+  userEmail     String
 }
 
 model Note {

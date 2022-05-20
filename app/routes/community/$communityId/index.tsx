@@ -1,18 +1,12 @@
-import { Community } from "@prisma/client";
-import type { ActionFunction, LoaderFunction } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
-import { Form, useCatch, useLoaderData } from "@remix-run/react";
+import type { LoaderFunction } from "@remix-run/node";
+import { json } from "@remix-run/node";
+import { Link, useCatch, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
-import type { CommunityFull } from "~/models/community.server";
+import type { CommunityEnriched } from "~/models/community.server";
 import { getCommunity } from "~/models/community.server";
 
-import type { Note } from "~/models/note.server";
-import { deleteNote } from "~/models/note.server";
-import { getNote } from "~/models/note.server";
-import { requireUserId } from "~/session.server";
-
 type LoaderData = {
-  community: CommunityFull;
+  community: CommunityEnriched;
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
@@ -25,15 +19,6 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   }
   return json<LoaderData>({ community });
 };
-
-// export const action: ActionFunction = async ({ request, params }) => {
-//   const userId = await requireUserId(request);
-//   invariant(params.noteId, "noteId not found");
-
-//   await deleteNote({ userId, id: params.noteId });
-
-//   return redirect("/notes");
-// };
 
 export default function CommunityDetailsPage() {
   const { community } = useLoaderData() as LoaderData;
@@ -48,6 +33,18 @@ export default function CommunityDetailsPage() {
         ))}
         <li></li>
       </ul>
+      <h2>Invites</h2>
+      <ul>
+        {community.invites.map((invite) => (
+          <li key={invite.userEmail}>
+            {invite.userEmail} - {invite.status.name}
+          </li>
+        ))}
+        <li></li>
+      </ul>
+      <Link to={`invites/new`}>
+        <button>Invite new member</button>
+      </Link>
     </div>
   );
 }
