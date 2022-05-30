@@ -1,18 +1,15 @@
-import type {
-  Community,
-  Invitation,
-  InvitationStatus,
-  Member,
-  User,
-} from "@prisma/client";
+import type { Community, Invitation, Member, User } from "@prisma/client";
 
 import { prisma } from "~/db.server";
 
-export type { Community, Invitation, InvitationStatus, User };
+export type { Community, Invitation, User };
+
+export type MemberPermission = "Admin" | "Member";
+export type InvitationStatus = "Open" | "Accepted" | "Rejected" | "Expired";
 
 export type CommunityEnriched = Community & {
-  members: (Member & { user: Pick<User, "email"> })[];
-  invites: (Invitation & { status: Pick<InvitationStatus, "name"> })[];
+  members: (Member & { user: Pick<User, "firstName" | "lastName"> })[];
+  invites: Invitation[];
 };
 
 export function getMemberPermissions() {
@@ -34,11 +31,7 @@ export function getCommunity({
           user: true,
         },
       },
-      invites: {
-        include: {
-          status: true,
-        },
-      },
+      invites: true,
     },
   });
 }

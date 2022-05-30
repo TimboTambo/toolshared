@@ -8,6 +8,7 @@ import { actionInvite } from "~/models/community.server";
 import { getInviteById } from "~/models/community.server";
 import invariant from "tiny-invariant";
 import { requireUserId } from "~/session.server";
+import Layout from "~/components/layout";
 
 type LoaderData = {
   invite: InvitationEnriched;
@@ -59,7 +60,7 @@ export default function InviteDetailsPage() {
   const { invite } = useLoaderData() as LoaderData;
 
   return (
-    <div>
+    <>
       <h1>Invite</h1>
       <div>Community: {invite.community.name}</div>
       <Form method="post">
@@ -70,6 +71,6 @@ export default function InviteDetailsPage() {
         <input type="hidden" name="action" value="reject" />
         <button type="submit">Reject</button>
       </Form>
-    </div>
+    </>
   );
 }

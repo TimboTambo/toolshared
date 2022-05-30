@@ -22,6 +22,9 @@ interface ActionData {
   errors: {
     email?: string;
     password?: string;
+    firstName?: string;
+    lastName?: string;
+    postcode?: string;
   };
 }
 
@@ -29,6 +32,9 @@ export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
   const email = formData.get("email");
   const password = formData.get("password");
+  const firstName = formData.get("firstName");
+  const lastName = formData.get("lastName");
+  const postcode = formData.get("postcode");
   const redirectTo = safeRedirect(formData.get("redirectTo"), "/");
 
   if (!validateEmail(email)) {
@@ -52,6 +58,27 @@ export const action: ActionFunction = async ({ request }) => {
     );
   }
 
+  if (typeof firstName !== "string" || firstName.length === 0) {
+    return json<ActionData>(
+      { errors: { firstName: "First name is required" } },
+      { status: 400 }
+    );
+  }
+
+  if (typeof lastName !== "string" || lastName.length === 0) {
+    return json<ActionData>(
+      { errors: { lastName: "Last name is required" } },
+      { status: 400 }
+    );
+  }
+
+  if (typeof postcode !== "string" || postcode.length === 0) {
+    return json<ActionData>(
+      { errors: { postcode: "Postcode is required" } },
+      { status: 400 }
+    );
+  }
+
   const existingUser = await getUserByEmail(email);
   if (existingUser) {
     return json<ActionData>(
@@ -60,7 +87,13 @@ export const action: ActionFunction = async ({ request }) => {
     );
   }
 
-  const user = await createUser(email, password);
+  const user = await createUser({
+    email,
+    password,
+    firstName,
+    lastName,
+    postcode,
+  });
 
   return createUserSession({
     request,
@@ -82,6 +115,9 @@ export default function Join() {
   const actionData = useActionData() as ActionData;
   const emailRef = React.useRef<HTMLInputElement>(null);
   const passwordRef = React.useRef<HTMLInputElement>(null);
+  const firstNameRef = React.useRef<HTMLInputElement>(null);
+  const lastNameRef = React.useRef<HTMLInputElement>(null);
+  const postcodeRef = React.useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
     if (actionData?.errors?.email) {
@@ -144,6 +180,87 @@ export default function Join() {
               {actionData?.errors?.password && (
                 <div className="pt-1 text-red-700" id="password-error">
                   {actionData.errors.password}
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <label
+              htmlFor="firstName"
+              className="block text-sm font-medium text-gray-700"
+            >
+              First name
+            </label>
+            <div className="mt-1">
+              <input
+                ref={firstNameRef}
+                id="firstName"
+                required
+                autoFocus={true}
+                name="firstName"
+                type="text"
+                aria-invalid={actionData?.errors?.firstName ? true : undefined}
+                aria-describedby="firstName-error"
+                className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
+              />
+              {actionData?.errors?.firstName && (
+                <div className="pt-1 text-red-700" id="firstName-error">
+                  {actionData.errors.firstName}
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <label
+              htmlFor="lastName"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Last name
+            </label>
+            <div className="mt-1">
+              <input
+                ref={lastNameRef}
+                id="lastName"
+                required
+                autoFocus={true}
+                name="lastName"
+                type="text"
+                aria-invalid={actionData?.errors?.lastName ? true : undefined}
+                aria-describedby="lastName-error"
+                className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
+              />
+              {actionData?.errors?.lastName && (
+                <div className="pt-1 text-red-700" id="lastName-error">
+                  {actionData.errors.lastName}
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <label
+              htmlFor="postcode"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Postcode
+            </label>
+            <div className="mt-1">
+              <input
+                ref={postcodeRef}
+                id="postcode"
+                required
+                autoFocus={true}
+                name="postcode"
+                type="text"
+                aria-invalid={actionData?.errors?.postcode ? true : undefined}
+                aria-describedby="postcode-error"
+                className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
+              />
+              {actionData?.errors?.postcode && (
+                <div className="pt-1 text-red-700" id="postcode-error">
+                  {actionData.errors.postcode}
                 </div>
               )}
             </div>

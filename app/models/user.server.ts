@@ -27,11 +27,22 @@ export async function getCommunitiesByUserId(id: User["id"]) {
   return user?.members.map((member) => member.community);
 }
 
-export async function createUser(email: User["email"], password: string) {
+export async function createUser({
+  email,
+  password,
+  firstName,
+  lastName,
+  postcode,
+}: Pick<User, "email" | "firstName" | "lastName" | "postcode"> & {
+  password: string;
+}) {
   const hashedPassword = await bcrypt.hash(password, 10);
 
   return prisma.user.create({
     data: {
+      firstName,
+      lastName,
+      postcode,
       email,
       password: {
         create: {
