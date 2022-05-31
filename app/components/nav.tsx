@@ -1,6 +1,10 @@
 import { Form, Link } from "@remix-run/react";
 
-const Nav = () => {
+interface NavProps {
+  userLoggedIn: boolean;
+}
+
+const Nav: React.FC<NavProps> = ({ userLoggedIn }) => {
   return (
     <ul className="flex space-x-4 bg-green-50 p-6">
       <li>
@@ -18,13 +22,15 @@ const Nav = () => {
           Tools
         </Link>
       </li>
-      <li>
-        <Form action="/logout" method="post">
-          <button type="submit" className="underline">
-            Log out
-          </button>
-        </Form>
-      </li>
+      {userLoggedIn && (
+        <li>
+          <Form action="/logout" method="post">
+            <button type="submit" className="underline">
+              Log out
+            </button>
+          </Form>
+        </li>
+      )}
     </ul>
   );
 };

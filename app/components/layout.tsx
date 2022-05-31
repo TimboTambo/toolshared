@@ -1,9 +1,13 @@
 import Nav from "./nav";
 
-const Layout: React.FC = ({ children }) => {
+interface LayoutProps {
+  userLoggedIn: boolean;
+}
+
+const Layout: React.FC<LayoutProps> = ({ children, userLoggedIn }) => {
   return (
     <div className="">
-      <Nav />
+      <Nav userLoggedIn={userLoggedIn} />
       <div className="p-6">{children}</div>
     </div>
   );

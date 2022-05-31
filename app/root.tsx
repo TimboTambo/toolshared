@@ -11,6 +11,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
 } from "@remix-run/react";
 
 import tailwindStylesheetUrl from "./styles/tailwind.css";
@@ -38,6 +39,8 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export default function App() {
+  const { user } = useLoaderData() as LoaderData;
+
   return (
     <html lang="en" className="h-full">
       <head>
@@ -45,7 +48,7 @@ export default function App() {
         <Links />
       </head>
       <body className="h-full">
-        <Layout>
+        <Layout userLoggedIn={!!user}>
           <Outlet />
         </Layout>
         <ScrollRestoration />
