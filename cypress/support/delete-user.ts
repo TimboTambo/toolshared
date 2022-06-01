@@ -15,7 +15,8 @@ async function deleteUser(email: string) {
   if (!email.endsWith("@example.com")) {
     throw new Error("All test emails must end in @example.com");
   }
-
+  const user = await prisma.user.findUnique({ where: { email } });
+  console.log({ user });
   await prisma.user.delete({ where: { email } });
 }
 

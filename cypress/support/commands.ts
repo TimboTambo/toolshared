@@ -61,10 +61,10 @@ function cleanupUser({ email }: { email?: string } = {}) {
   cy.clearCookie("__session");
 }
 
-function deleteUserByEmail(email: string) {
+async function deleteUserByEmail(email: string) {
   cy.exec(
     `npx ts-node --require tsconfig-paths/register ./cypress/support/delete-user.ts "${email}"`
-  );
+  ).then((output) => cy.task("log", { output }));
   cy.clearCookie("__session");
 }
 
